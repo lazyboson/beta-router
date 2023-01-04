@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package api;
+
+option go_package = "./apipb";
+
+import "google/api/annotations.proto";
+
+//Receive Task Event
+message TaskCreationEventRequest{
+  string queue_id = 1;
+  string task_id = 2;
+  string account_id = 3;
+}
+
+//Response Task Creation
+message TaskEventResponse {
+  string message = 1;
+}
+
+service APIService{
+  rpc TaskEvents(TaskCreationEventRequest) returns(TaskEventResponse) {
+    option (google.api.http) ={
+      post: "/v1/router/event"
+      body: "*"
+    };
+  }
+}
+
