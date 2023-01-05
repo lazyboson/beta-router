@@ -39,7 +39,7 @@ func (r *Router) ListenEvents(req *pb.TaskCreationEventRequest) *pb.TaskEventRes
 
 func (r *Router) handleTask(accountId string) {
 	taskViewUri := r.conf.QueueBaseUrl + taskViewPath
-	fmt.Printf("TaskViewUrl: %+v", taskViewUri)
+	fmt.Printf("TaskViewUrl: %+v \n", taskViewUri)
 
 	taskViewPayload := &models.TaskViewPayload{
 		AccountId: accountId,
@@ -48,38 +48,39 @@ func (r *Router) handleTask(accountId string) {
 
 	res, err := httpclient.Post(taskViewPayload, taskViewUri, map[string]string{ContentType: ContentTypeJSON})
 	if err != nil {
-		fmt.Errorf("failed to fetch task view builder res: %+v", err)
+		fmt.Errorf("failed to fetch task view builder res: %+v \n", err)
 		return
 	}
 
 	topKTasks := &models.TopKTasks{}
 	err = json.Unmarshal(res, topKTasks)
 	if err != nil {
-		fmt.Errorf("failed to unmarshall k task resp: %+v", err)
+		fmt.Errorf("failed to unmarshall k task resp: %+v \n", err)
 		return
 	}
 	fmt.Printf("Top K Tasks: %+v", topKTasks)
 	// pull context and transferring call to active Agent
 	for i := 0; i < len(topKTasks.Tasks); i++ {
 		task := topKTasks.Tasks[i]
+		fmt.Printf("current task :%s \n", task)
 		contextPullUrl := r.conf.QueueBaseUrl + queuePath + task + contextPull
 		res, err = httpclient.Post("", contextPullUrl, map[string]string{ContentType: ContentTypeJSON})
 		if err != nil {
-			fmt.Errorf("failed to pull context for the call: %+v", err)
+			fmt.Errorf("failed to pull context for the call: %+v \n", err)
 			continue
 		}
 		taskContext := &models.TaskContext{}
 		err = json.Unmarshal(res, taskContext)
 		if err != nil {
-			fmt.Errorf("failed to unmarshall call context: %+v", err)
+			fmt.Errorf("failed to unmarshall call context: %+v \n", err)
 			return
 		}
 
-		fmt.Printf("Context Pull: data %+v", taskContext)
+		fmt.Printf("Context Pull: data %+v \n", taskContext)
 		agentConvParams := prepareAgentServiceConversationParams(taskContext.CallContext)
 		err = r.previewCallToAgent(agentConvParams)
 		if err != nil {
-			fmt.Errorf("failed to prepare task: %+v", err)
+			fmt.Errorf("failed to prepare task: %+v \n", err)
 			return
 		}
 
@@ -89,9 +90,10 @@ func (r *Router) handleTask(accountId string) {
 		}
 
 		hangupUrl := r.conf.QueueBaseUrl + hangupPath
+		fmt.Printf("hangup Path: %v\n", hangupUrl)
 		_, err = httpclient.Post(hangupPayload, hangupUrl, map[string]string{ContentType: ContentTypeJSON})
 		if err != nil {
-			fmt.Errorf("failed to send hangup event: %+v", err)
+			fmt.Errorf("failed to send hangup event: %+v \n", err)
 			return
 		}
 
