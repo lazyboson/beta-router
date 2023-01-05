@@ -39,6 +39,8 @@ func (r *Router) ListenEvents(req *pb.TaskCreationEventRequest) *pb.TaskEventRes
 
 func (r *Router) handleTask(accountId string) {
 	taskViewUri := r.conf.QueueBaseUrl + taskViewPath
+	fmt.Printf("TaskViewUrl: %+v", taskViewUri)
+
 	taskViewPayload := &models.TaskViewPayload{
 		AccountId: accountId,
 		TaskCount: taskCount,
@@ -46,13 +48,15 @@ func (r *Router) handleTask(accountId string) {
 
 	res, err := httpclient.Post(taskViewPayload, taskViewUri, map[string]string{ContentType: ContentTypeJSON})
 	if err != nil {
-		log.Fatal(err)
+		fmt.Errorf("failed to fetch task view builder res: %+v", err)
+		return
 	}
 
 	topKTasks := &models.TopKTasks{}
 	err = json.Unmarshal(res, topKTasks)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Errorf("failed to unmarshall k task resp: %+v", err)
+		return
 	}
 	fmt.Printf("Top K Tasks: %+v", topKTasks)
 	// pull context and transferring call to active Agent
@@ -61,18 +65,21 @@ func (r *Router) handleTask(accountId string) {
 		contextPullUrl := r.conf.QueueBaseUrl + queuePath + task + contextPull
 		res, err = httpclient.Post("", contextPullUrl, map[string]string{ContentType: ContentTypeJSON})
 		if err != nil {
-			log.Fatal(err)
+			fmt.Errorf("failed to pull context for the call: %+v", err)
+			continue
 		}
 		taskContext := &models.TaskContext{}
 		err = json.Unmarshal(res, taskContext)
 		if err != nil {
-			log.Fatal(err)
+			fmt.Errorf("failed to unmarshall call context: %+v", err)
+			return
 		}
 
 		fmt.Printf("Context Pull: data %+v", taskContext)
 		agentConvParams := prepareAgentServiceConversationParams(taskContext.CallContext)
-		err := r.previewCallToAgent(agentConvParams)
+		err = r.previewCallToAgent(agentConvParams)
 		if err != nil {
+			fmt.Errorf("failed to prepare task: %+v", err)
 			return
 		}
 
@@ -84,7 +91,8 @@ func (r *Router) handleTask(accountId string) {
 		hangupUrl := r.conf.QueueBaseUrl + hangupPath
 		_, err = httpclient.Post(hangupPayload, hangupUrl, map[string]string{ContentType: ContentTypeJSON})
 		if err != nil {
-			log.Println(err)
+			fmt.Errorf("failed to send hangup event: %+v", err)
+			return
 		}
 
 	}
