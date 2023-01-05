@@ -78,6 +78,7 @@ func (s *APIServer) StopServer() {
 }
 
 func (s *APIServer) TaskEvents(ctx context.Context, req *pb.TaskCreationEventRequest) (*pb.TaskEventResponse, error) {
+	fmt.Printf("Task Event Received: Payload: %+v", req)
 	res := s.r.ListenEvents(req)
 
 	if res.Message == "" {

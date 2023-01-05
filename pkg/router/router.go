@@ -2,6 +2,7 @@ package router
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 
 	"github.com/lazyboson/beta-router/pkg/httpclient"
@@ -53,7 +54,7 @@ func (r *Router) handleTask(accountId string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	fmt.Printf("Top K Tasks: %+v", topKTasks)
 	// pull context and transferring call to active Agent
 	for i := 0; i < len(topKTasks.Tasks); i++ {
 		task := topKTasks.Tasks[i]
@@ -68,6 +69,7 @@ func (r *Router) handleTask(accountId string) {
 			log.Fatal(err)
 		}
 
+		fmt.Printf("Context Pull: data %+v", taskContext)
 		agentConvParams := prepareAgentServiceConversationParams(taskContext.CallContext)
 		err := r.previewCallToAgent(agentConvParams)
 		if err != nil {
