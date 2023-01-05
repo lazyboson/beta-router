@@ -1,7 +1,7 @@
 package router
 
 const (
-	queuePath       = "/v1/task"
+	queuePath       = "/v1/task/"
 	contextPull     = "/pull"
 	taskViewPath    = "/v1/view/tasks"
 	hangupPath      = "/v1/task/event"

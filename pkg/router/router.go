@@ -59,11 +59,11 @@ func (r *Router) handleTask(accountId string) {
 		fmt.Errorf("failed to unmarshall k task resp: %+v \n", err)
 		return
 	}
-	fmt.Printf("Top K Tasks: %+v \n", topKTasks)
 	// pull context and transferring call to active Agent
 	for i := 0; i < len(topKTasks.Tasks); i++ {
 		task := topKTasks.Tasks[i]
 		contextPullUrl := r.conf.QueueBaseUrl + queuePath + task + contextPull
+		fmt.Printf("context Pull Url :%s \n", contextPullUrl)
 		res, err = httpclient.Post("", contextPullUrl, map[string]string{ContentType: ContentTypeJSON})
 		if err != nil {
 			fmt.Errorf("failed to pull context for the call: %+v \n", err)
