@@ -32,7 +32,8 @@ func (r *Router) ListenEvents(req *pb.TaskCreationEventRequest) *pb.TaskEventRes
 		log.Printf("empty account id received")
 		return res
 	}
-	go r.handleTask(accountId)
+
+	r.handleTask(accountId)
 
 	return res
 }
@@ -58,7 +59,7 @@ func (r *Router) handleTask(accountId string) {
 		fmt.Errorf("failed to unmarshall k task resp: %+v \n", err)
 		return
 	}
-	fmt.Printf("Top K Tasks: %+v", topKTasks)
+	fmt.Printf("Top K Tasks: %+v \n", topKTasks)
 	// pull context and transferring call to active Agent
 	for i := 0; i < len(topKTasks.Tasks); i++ {
 		task := topKTasks.Tasks[i]
