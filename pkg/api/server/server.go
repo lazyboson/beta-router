@@ -2,7 +2,9 @@ package server
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"net"
 	"net/http"
 
 	pb "github.com/lazyboson/beta-router/pkg/pb/apipb"
@@ -50,6 +52,25 @@ func NewAPIServer(port int, conf *router.Config) *APIServer {
 	server.r = router.NewRouter(conf)
 
 	return server
+}
+
+func (s *APIServer) StartServer() {
+
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", s.grpcServerPort))
+	if err != nil {
+		fmt.Printf("failed to listen: %v", err)
+	}
+	fmt.Println("router grpc server listing on [::]", s.grpcServerPort)
+
+	go s.grpcServer.Serve(listener)
+	go func() {
+		fmt.Printf("router http listing on [::] %d \n", s.httpServerPort)
+		err := http.ListenAndServe(fmt.Sprintf(":%+d", s.httpServerPort), s.httpMux)
+		if err != nil {
+			fmt.Println(err)
+			log.Fatal("unable to start http server")
+		}
+	}()
 }
 
 func (s *APIServer) StopServer() {

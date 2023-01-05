@@ -35,6 +35,7 @@ func new() (rs *RouterService) {
 
 func (rs *RouterService) start() {
 	rs.apiServer = server.NewAPIServer(rs.port, rs.conf)
+	rs.apiServer.StartServer()
 }
 
 func (rs *RouterService) Configure() {
