@@ -62,7 +62,6 @@ func (r *Router) handleTask(accountId string) {
 	// pull context and transferring call to active Agent
 	for i := 0; i < len(topKTasks.Tasks); i++ {
 		task := topKTasks.Tasks[i]
-		fmt.Printf("current task :%s \n", task)
 		contextPullUrl := r.conf.QueueBaseUrl + queuePath + task + contextPull
 		res, err = httpclient.Post("", contextPullUrl, map[string]string{ContentType: ContentTypeJSON})
 		if err != nil {
