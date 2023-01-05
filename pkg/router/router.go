@@ -69,7 +69,22 @@ func (r *Router) handleTask(accountId string) {
 		}
 
 		agentConvParams := prepareAgentServiceConversationParams(taskContext.CallContext)
-		r.previewCallToAgent(agentConvParams)
+		err := r.previewCallToAgent(agentConvParams)
+		if err != nil {
+			return
+		}
+
+		hangupPayload := &models.HangupEvent{
+			CallStatus: "completed",
+			CallUuid:   agentConvParams.Conversation.Interaction.CallId,
+		}
+
+		hangupUrl := r.conf.QueueBaseUrl + hangupPath
+		_, err = httpclient.Post(hangupPayload, hangupUrl, map[string]string{ContentType: ContentTypeJSON})
+		if err != nil {
+			log.Println(err)
+		}
+
 	}
 }
 
@@ -143,9 +158,11 @@ func prepareAgentServiceConversationParams(context map[string]interface{}) *mode
 	return agentConvParams
 }
 
-func (r *Router) previewCallToAgent(body interface{}) {
+func (r *Router) previewCallToAgent(body interface{}) error {
 	_, err := httpclient.Post(body, r.conf.CtiBaseUrl, map[string]string{ContentType: ContentTypeJSON})
 	if err != nil {
-		log.Println(err)
+		return err
 	}
+
+	return err
 }

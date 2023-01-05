@@ -47,3 +47,8 @@ type AgentServiceConvParam struct {
 	Task               Task         `json:"task"`
 	Conversation       Conversation `json:"conversation"`
 }
+
+type HangupEvent struct {
+	CallUuid   string `json:"call_uuid"`
+	CallStatus string `json:"call_status"`
+}
