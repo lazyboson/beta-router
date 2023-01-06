@@ -97,7 +97,11 @@ func (r *Router) handleTask(accountId string) {
 		fmt.Printf("hangup payload :%+v \n", hangupPayload)
 
 		hangupUrl := r.conf.QueueBaseUrl + hangupPath
-		_, err = httpclient.Post(hangupPayload, hangupUrl, map[string]string{ContentType: ContentTypeJSON})
+
+		h := &models.Hangup{
+			HangupData: hangupPayload,
+		}
+		_, err = httpclient.Post(h, hangupUrl, map[string]string{ContentType: ContentTypeJSON})
 		if err != nil {
 			fmt.Errorf("failed to send hangup event: %+v \n", err)
 			return

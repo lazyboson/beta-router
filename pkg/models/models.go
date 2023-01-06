@@ -52,3 +52,7 @@ type HangupEvent struct {
 	CallUuid   string `json:"call_uuid"`
 	CallStatus string `json:"call_status"`
 }
+
+type Hangup struct {
+	HangupData *HangupEvent `json:"body"`
+}
