@@ -78,15 +78,20 @@ func (r *Router) handleTask(accountId string) {
 
 		fmt.Printf("Context Pull: data %+v \n", taskContext)
 		agentConvParams := prepareAgentServiceConversationParams(taskContext.CallContext)
+		agentConvParams.Task.TaskId = taskContext.TaskId
+		agentConvParams.Task.QueueName = "3C-QUEUE"
+		agentConvParams.Task.QueueId = taskContext.QueueId
 		err = r.previewCallToAgent(agentConvParams)
 		if err != nil {
 			fmt.Errorf("failed to prepare task: %+v \n", err)
 			return
 		}
-
 		hangupPayload := &models.HangupEvent{
 			CallStatus: "completed",
-			CallUuid:   agentConvParams.Conversation.Interaction.CallId,
+		}
+
+		if callUUID, ok := taskContext.CallContext["call_uuid"]; ok {
+			hangupPayload.CallUuid = callUUID.(string)
 		}
 
 		hangupUrl := r.conf.QueueBaseUrl + hangupPath
