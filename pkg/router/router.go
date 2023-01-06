@@ -33,12 +33,12 @@ func (r *Router) ListenEvents(req *pb.TaskCreationEventRequest) *pb.TaskEventRes
 		return res
 	}
 
-	r.handleTask(accountId)
+	go r.handleTask(accountId)
 	return res
 }
 
 func (r *Router) handleTask(accountId string) {
-	time.Sleep(2 * time.Second)
+	time.Sleep(10 * time.Second)
 	taskViewUri := r.conf.QueueBaseUrl + taskViewPath
 	fmt.Printf("TaskViewUrl: %+v \n", taskViewUri)
 
