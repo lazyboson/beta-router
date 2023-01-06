@@ -122,7 +122,9 @@ func prepareAgentServiceConversationParams(context map[string]interface{}) *mode
 	}
 	mpCtx := contextCTx.(map[string]interface{})
 	if convFlowId, ok = mpCtx["conversationFlowId"]; ok {
-		agentConvParams.ConversationFlowId = convFlowId.(string)
+		fConvFlowId := convFlowId.(float64)
+		sConvFlowId := fmt.Sprintf("%v", fConvFlowId)
+		agentConvParams.ConversationFlowId = sConvFlowId
 	}
 
 	if ctxConv, ok = mpCtx["conversation"]; !ok {
