@@ -117,56 +117,52 @@ func prepareAgentServiceConversationParams(context map[string]interface{}) *mode
 		agentConvParams.ChannelId = chanType.(string)
 	}
 
-	if contextCTx, ok = context["context"]; !ok {
-		return agentConvParams
-	}
-	mpCtx := contextCTx.(map[string]interface{})
-	if convFlowId, ok = mpCtx["conversationFlowId"]; ok {
-		fConvFlowId := convFlowId.(float64)
-		sConvFlowId := fmt.Sprintf("%v", fConvFlowId)
-		agentConvParams.ConversationFlowId = sConvFlowId
-	}
+	if contextCTx, ok = context["context"]; ok {
+		mpCtx := contextCTx.(map[string]interface{})
+		if convFlowId, ok = mpCtx["conversationFlowId"]; ok {
+			y := convFlowId.(float64)
+			var s string = fmt.Sprintf("%v", y)
+			agentConvParams.ConversationFlowId = s
+		}
 
-	if ctxConv, ok = mpCtx["conversation"]; !ok {
-		return agentConvParams
-	}
-	mpConv := ctxConv.(map[string]interface{})
-	if convId, ok := mpConv["id"]; ok {
-		agentConvParams.Conversation.Id = convId.(string)
-	}
-	if ctx, ok := mpConv["context"]; ok {
-		agentConvParams.Conversation.Context = ctx
-	}
+		if ctxConv, ok = mpCtx["conversation"]; ok {
+			mpConv := ctxConv.(map[string]interface{})
+			if convId, ok := mpConv["id"]; ok {
+				agentConvParams.Conversation.Id = convId.(string)
+			}
+			if ctx, ok := mpConv["context"]; ok {
+				agentConvParams.Conversation.Context = ctx
+			}
 
-	if _, ok := mpConv["interaction"]; !ok {
-		return agentConvParams
-	}
-
-	mpInteraction := mpConv["interface"].(map[string]interface{})
-	if interID, ok := mpInteraction["id"]; ok {
-		agentConvParams.Conversation.Interaction.CallId = interID.(string)
-	}
-	if interDir, ok := mpInteraction["direction"]; ok {
-		agentConvParams.Conversation.Interaction.Direction = interDir.(string)
-	}
-	if interCtx, ok := mpInteraction["context"]; ok {
-		agentConvParams.Conversation.Interaction.Context = interCtx
-	}
-	if interDisName, ok := mpInteraction["displayName"]; ok {
-		agentConvParams.Conversation.Interaction.DisplayName = interDisName.(string)
-	}
-	if interRmtSrtAt, ok := mpInteraction["remoteStartAt"]; ok {
-		y := interRmtSrtAt.(float64)
-		agentConvParams.Conversation.Interaction.RemoteStartAt = y
-	}
-	if interInvAs, ok := mpInteraction["invitedAs"]; ok {
-		agentConvParams.Conversation.Interaction.InvitedAs = interInvAs.(string)
-	}
-	if interTo, ok := mpInteraction["toAddress"]; ok {
-		agentConvParams.Conversation.Interaction.ToAddress = interTo.(string)
-	}
-	if interFrom, ok := mpInteraction["fromAddress"]; ok {
-		agentConvParams.Conversation.Interaction.FromAddress = interFrom.(string)
+			if convInter, ok := mpConv["interaction"]; ok {
+				mpInteraction := convInter.(map[string]interface{})
+				if interID, ok := mpInteraction["id"]; ok {
+					agentConvParams.Conversation.Interaction.CallId = interID.(string)
+				}
+				if interDir, ok := mpInteraction["direction"]; ok {
+					agentConvParams.Conversation.Interaction.Direction = interDir.(string)
+				}
+				if interCtx, ok := mpInteraction["context"]; ok {
+					agentConvParams.Conversation.Interaction.Context = interCtx
+				}
+				if interDisName, ok := mpInteraction["displayName"]; ok {
+					agentConvParams.Conversation.Interaction.DisplayName = interDisName.(string)
+				}
+				if interRmtSrtAt, ok := mpInteraction["remoteStartAt"]; ok {
+					y := interRmtSrtAt.(float64)
+					agentConvParams.Conversation.Interaction.RemoteStartAt = y
+				}
+				if interInvAs, ok := mpInteraction["invitedAs"]; ok {
+					agentConvParams.Conversation.Interaction.InvitedAs = interInvAs.(string)
+				}
+				if interTo, ok := mpInteraction["toAddress"]; ok {
+					agentConvParams.Conversation.Interaction.ToAddress = interTo.(string)
+				}
+				if interFrom, ok := mpInteraction["fromAddress"]; ok {
+					agentConvParams.Conversation.Interaction.FromAddress = interFrom.(string)
+				}
+			}
+		}
 	}
 
 	return agentConvParams
