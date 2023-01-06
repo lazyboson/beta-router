@@ -3,11 +3,12 @@ package router
 import (
 	"encoding/json"
 	"fmt"
+	"log"
+	"time"
+
 	"github.com/lazyboson/beta-router/pkg/httpclient"
 	"github.com/lazyboson/beta-router/pkg/models"
 	pb "github.com/lazyboson/beta-router/pkg/pb/apipb"
-	"log"
-	"time"
 )
 
 type Router struct {
