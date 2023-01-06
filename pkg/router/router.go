@@ -3,12 +3,11 @@ package router
 import (
 	"encoding/json"
 	"fmt"
-	"log"
-	"time"
-
 	"github.com/lazyboson/beta-router/pkg/httpclient"
 	"github.com/lazyboson/beta-router/pkg/models"
 	pb "github.com/lazyboson/beta-router/pkg/pb/apipb"
+	"log"
+	"time"
 )
 
 type Router struct {
@@ -34,13 +33,12 @@ func (r *Router) ListenEvents(req *pb.TaskCreationEventRequest) *pb.TaskEventRes
 		return res
 	}
 
-	go r.handleTask(accountId)
-
+	r.handleTask(accountId)
 	return res
 }
 
 func (r *Router) handleTask(accountId string) {
-	time.Sleep(5 * time.Second)
+	time.Sleep(2 * time.Second)
 	taskViewUri := r.conf.QueueBaseUrl + taskViewPath
 	fmt.Printf("TaskViewUrl: %+v \n", taskViewUri)
 
