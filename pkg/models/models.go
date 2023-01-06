@@ -11,9 +11,9 @@ type TopKTasks struct {
 }
 
 type TaskContext struct {
-	CallContext map[string]interface{} `json:"call_context"`
-	TaskId      string                 `json:"task_id"`
-	QueueId     string                 `json:"queue_id"`
+	CallContext map[string]interface{} `json:"callContext"`
+	TaskId      string                 `json:"taskId"`
+	QueueId     string                 `json:"queueId"`
 }
 
 type Interaction struct {
