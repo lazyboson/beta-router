@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
+	"google.golang.org/protobuf/encoding/protojson"
 	"log"
 	"net"
 	"net/http"
@@ -39,7 +40,11 @@ func NewAPIServer(port int, conf *router.Config) *APIServer {
 	reflection.Register(server.grpcServer)
 	pb.RegisterAPIServiceServer(gs, server)
 
-	gMux := runtime.NewServeMux()
+	gMux := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{
+		UnmarshalOptions: protojson.UnmarshalOptions{
+			DiscardUnknown: true,
+		},
+	}))
 	err := pb.RegisterAPIServiceHandlerServer(context.Background(), gMux, server)
 	if err != nil {
 		log.Fatal(err)
