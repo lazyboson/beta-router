@@ -3,7 +3,6 @@ package server
 import (
 	"context"
 	"fmt"
-	"google.golang.org/protobuf/encoding/protojson"
 	"log"
 	"net"
 	"net/http"
@@ -18,6 +17,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/encoding/protojson"
 )
 
 type APIServer struct {
