@@ -50,14 +50,14 @@ func (r *Router) handleTask(accountId string) {
 
 	res, err := httpclient.Post(taskViewPayload, taskViewUri, map[string]string{ContentType: ContentTypeJSON})
 	if err != nil {
-		fmt.Errorf("failed to fetch task view builder res: %+v \n", err)
+		fmt.Printf("Error:: failed to fetch task view builder res: %+v \n", err)
 		return
 	}
 
 	topKTasks := &models.TopKTasks{}
 	err = json.Unmarshal(res, topKTasks)
 	if err != nil {
-		fmt.Errorf("failed to unmarshall k task resp: %+v \n", err)
+		fmt.Printf("Error:: failed to unmarshall k task resp: %+v \n", err)
 		return
 	}
 	// pull context and transferring call to active Agent
@@ -67,13 +67,13 @@ func (r *Router) handleTask(accountId string) {
 		fmt.Printf("context Pull Url :%s \n", contextPullUrl)
 		res, err = httpclient.Post("", contextPullUrl, map[string]string{ContentType: ContentTypeJSON})
 		if err != nil {
-			fmt.Errorf("failed to pull context for the call: %+v \n", err)
+			fmt.Printf("failed to pull context for the call: %+v \n", err)
 			continue
 		}
 		taskContext := &models.TaskContext{}
 		err = json.Unmarshal(res, taskContext)
 		if err != nil {
-			fmt.Errorf("failed to unmarshall call context: %+v \n", err)
+			fmt.Printf("failed to unmarshall call context: %+v \n", err)
 			return
 		}
 
@@ -84,8 +84,7 @@ func (r *Router) handleTask(accountId string) {
 		agentConvParams.Task.QueueId = taskContext.QueueId
 		err = r.previewCallToAgent(agentConvParams)
 		if err != nil {
-			fmt.Errorf("failed to prepare task: %+v \n", err)
-			return
+			fmt.Printf("Error:: failed to transfer call to CTI: %+v \n", err)
 		}
 		hangupPayload := &models.HangupEvent{
 			CallStatus: "completed",
@@ -104,7 +103,7 @@ func (r *Router) handleTask(accountId string) {
 		}
 		_, err = httpclient.Post(h, hangupUrl, map[string]string{ContentType: ContentTypeJSON})
 		if err != nil {
-			fmt.Errorf("failed to send hangup event: %+v \n", err)
+			fmt.Printf("Error:: failed to send hangup event: %+v \n", err)
 			return
 		}
 

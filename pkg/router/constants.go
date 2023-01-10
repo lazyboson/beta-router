@@ -7,5 +7,5 @@ const (
 	hangupPath      = "/v1/task/event"
 	ContentType     = "Content-Type"
 	ContentTypeJSON = "application/json"
-	taskCount       = 1
+	taskCount       = 10
 )
