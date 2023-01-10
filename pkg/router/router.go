@@ -39,7 +39,7 @@ func (r *Router) ListenEvents(req *pb.TaskCreationEventRequest) *pb.TaskEventRes
 }
 
 func (r *Router) handleTask(accountId string) {
-	time.Sleep(10 * time.Second)
+	time.Sleep(5 * time.Second)
 	taskViewUri := r.conf.QueueBaseUrl + taskViewPath
 	fmt.Printf("TaskViewUrl: %+v \n", taskViewUri)
 
