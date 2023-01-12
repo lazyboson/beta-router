@@ -137,8 +137,12 @@ func prepareAgentServiceConversationParams(context map[string]interface{}) *mode
 
 		if ctxConv, ok = mpCtx["conversation"]; ok {
 			mpConv := ctxConv.(map[string]interface{})
-			if convId, ok := mpConv["id"]; ok {
-				agentConvParams.Conversation.Id = convId.(string)
+			if chanType != "whatsapp" {
+				if convId, ok := mpConv["id"]; ok {
+					agentConvParams.Conversation.Id = convId.(string)
+				}
+			} else {
+				agentConvParams.Conversation.Id = callUUID.(string)
 			}
 			if ctx, ok := mpConv["context"]; ok {
 				agentConvParams.Conversation.Context = ctx
