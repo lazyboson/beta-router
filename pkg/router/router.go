@@ -77,6 +77,7 @@ func (r *Router) handleTask(accountId string) {
 			return
 		}
 
+		fmt.Println()
 		fmt.Printf("Context Pull: data %+v \n", taskContext)
 		agentConvParams := prepareAgentServiceConversationParams(taskContext.CallContext)
 		agentConvParams.Task.TaskId = taskContext.TaskId
@@ -93,7 +94,7 @@ func (r *Router) handleTask(accountId string) {
 		if callUUID, ok := taskContext.CallContext["call_uuid"]; ok {
 			hangupPayload.CallUuid = callUUID.(string)
 		}
-
+		fmt.Println()
 		fmt.Printf("hangup payload :%+v \n", hangupPayload)
 
 		hangupUrl := r.conf.QueueBaseUrl + hangupPath
@@ -182,7 +183,8 @@ func prepareAgentServiceConversationParams(context map[string]interface{}) *mode
 	return agentConvParams
 }
 
-func (r *Router) previewCallToAgent(body interface{}) error {
+func (r *Router) previewCallToAgent(body *models.AgentServiceConvParam) error {
+	fmt.Printf("CTI Url :%s  and Payload :+%v \n", r.conf.CtiBaseUrl, body)
 	_, err := httpclient.Post(body, r.conf.CtiBaseUrl, map[string]string{ContentType: ContentTypeJSON})
 	if err != nil {
 		return err
